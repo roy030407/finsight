@@ -1,17 +1,36 @@
 from pydantic_settings import BaseSettings
+from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    environment: str = "development"
-    debug: bool = True
+    # Database
     database_url: str
-    gemini_api_key: str = ""
-    alpha_vantage_key: str = ""
+
+    # Auth
     secret_key: str
     algorithm: str = "HS256"
-    access_token_expire_minutes: int = 60
+    access_token_expire_minutes: int = 30
 
-    model_config = {"env_file": ".env", "extra": "ignore"}
+    # AI
+    gemini_api_key: str = ""
+
+    # App
+    environment: str = "development"
+    allowed_origins: str = "http://localhost:5173,http://localhost:5174"
+
+    # Debug is False in production
+    @property
+    def debug(self) -> bool:
+        return self.environment != "production"
+
+    class Config:
+        env_file = ".env"
+        case_sensitive = False
 
 
-settings = Settings()
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()
+
+
+settings = get_settings()

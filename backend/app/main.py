@@ -31,19 +31,22 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-# Configure CORS middleware
-origins = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    os.getenv("FRONTEND_URL", "https://finsight-ui.onrender.com"),
-]
+# ── CORS ─────────────────────────────────────────────────────────
+# Reads ALLOWED_ORIGINS env var set by render.yaml
+# Falls back to localhost for local development
+allowed_origins_raw = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://localhost:5174"
+)
+
+allowed_origins = [o.strip() for o in allowed_origins_raw.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.include_router(auth.router)
@@ -57,24 +60,36 @@ app.include_router(export.router, prefix="/export", tags=["export"])
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint with service status"""
+    """Health check endpoint — must stay lightweight for Render pings"""
     from app.database.database import AsyncSessionLocal
-    from rag.pipeline import rag_pipeline
-    from ml.classifier import classifier
-    
-    status = {
-        "status": "ok",
+
+    services = {}
+
+    # Database check
+    try:
+        services["database"] = "ok" if AsyncSessionLocal else "unavailable"
+    except Exception:
+        services["database"] = "unavailable"
+
+    # RAG pipeline check
+    try:
+        from rag.pipeline import rag_pipeline
+        services["ai_chat"] = "ok" if rag_pipeline else "unavailable"
+    except Exception:
+        services["ai_chat"] = "unavailable"
+
+    # ML classifier check
+    try:
+        from ml.classifier import classifier
+        services["ml_classifier"] = "ok" if (classifier and classifier.is_trained) else "unavailable"
+    except Exception:
+        services["ml_classifier"] = "unavailable"
+
+    overall = "degraded" if any(v == "unavailable" for v in services.values()) else "ok"
+
+    return {
+        "status": overall,
         "app": "FinSight",
         "version": "1.0.0",
-        "services": {
-            "database": "ok" if AsyncSessionLocal else "unavailable",
-            "ai_chat": "ok" if rag_pipeline else "unavailable", 
-            "ml_classifier": "ok" if classifier and classifier.is_trained else "unavailable"
-        }
+        "services": services,
     }
-    
-    # Determine overall status
-    if any(service == "unavailable" for service in status["services"].values()):
-        status["status"] = "degraded"
-    
-    return status

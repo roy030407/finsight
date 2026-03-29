@@ -1,31 +1,66 @@
+# render.yaml — FinSight Production Configuration
+
+databases:
+  - name: finsight-db
+    databaseName: finsight
+    user: finsight_user
+    plan: free
+    ipAllowList: [] # empty = allow all Render internal services
+
 services:
+  # ─── Backend: FastAPI ───────────────────────────────────────────
   - type: web
     name: finsight-api
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: finsight-db
+          property: connectionString
       - key: SECRET_KEY
-        sync: false
-      - key: GEMINI_API_KEY
-        sync: false
+        generateValue: true # Render auto-generates a secure random string
       - key: ALGORITHM
         value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
-        value: 1440
-      - key: FRONTEND_URL
-        sync: false
+        value: "30"
+      - key: GEMINI_API_KEY
+        sync: false # Set this manually in the Render dashboard
+      - key: ENVIRONMENT
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: https://finsight-ui.onrender.com # Update if your frontend URL differs
+      - key: PYTHON_VERSION
+        value: "3.11.0"
 
+  # ─── Frontend: React/Vite Static Site ───────────────────────────
   - type: web
     name: finsight-ui
-    runtime: node
+    runtime: static
     rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
     routes:
       - type: rewrite
         source: /*
-        destination: /index.html
+        destination: /index.html # Critical: enables React Router SPA routing
+    envVars:
+      - key: VITE_API_URL
+        value: https://finsight-api.onrender.com # Update if your backend URL differs
+      - key: NODE_VERSION
+        value: "20.11.0"

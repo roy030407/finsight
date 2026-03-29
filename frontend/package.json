@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npx vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -38,7 +38,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
-    "vite": "^7.1.2",
+    "vite": "^5.4.19",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
