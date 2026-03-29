@@ -2,6 +2,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import List, Optional
 from pydantic import BaseModel, Field
+from pydantic import field_validator, model_validator
 
 
 class TransactionBase(BaseModel):
@@ -29,12 +30,39 @@ class TransactionUpdate(BaseModel):
     account: Optional[str] = Field(None, max_length=100)
 
 
-class TransactionOut(TransactionBase):
+class TransactionOut(BaseModel):
     id: str
     user_id: int
+    amount: float
+    transaction_type: str
+    category: str
+    description: Optional[str] = None
+    transaction_date: str
+    payment_mode: Optional[str] = None
+    account: Optional[str] = None
+    blockchain_hash: Optional[str] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+    @model_validator(mode='before')
+    @classmethod
+    def map_fields(cls, obj):
+        if hasattr(obj, '__dict__') or hasattr(obj, 'type'):
+            return {
+                'id': str(obj.id),
+                'user_id': obj.user_id,
+                'amount': float(round(obj.amount, 2)),
+                'transaction_type': obj.type.value if hasattr(obj.type, 'value') else str(obj.type),
+                'category': obj.category,
+                'description': obj.description,
+                'transaction_date': str(obj.date),
+                'payment_mode': obj.payment_mode,
+                'account': obj.account,
+                'blockchain_hash': obj.blockchain_hash,
+                'created_at': obj.created_at,
+            }
+        return obj
 
 
 class CategorySummary(BaseModel):

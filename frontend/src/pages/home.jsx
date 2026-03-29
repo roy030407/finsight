@@ -61,12 +61,14 @@ const Home = () => {
     isLoading: summaryLoading,
     error: summaryError,
   } = useQuery({
-    queryKey: ["transaction-summary"],
+    queryKey: ["transactions", "summary"],
     queryFn: async () => {
       try {
         const response = await api.get("/transactions/summary");
+        console.log("Summary data:", response.data); // Debug log
         return response.data;
       } catch (error) {
+        console.error("Summary error:", error); // Debug log
         toast.error("Failed to load transaction summary");
         throw error;
       }
@@ -353,7 +355,7 @@ const Home = () => {
                           {transaction.description || transaction.category}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {format(new Date(transaction.date), "MMM d, yyyy")}
+                          {format(new Date(transaction.transaction_date || transaction.date), "MMM d, yyyy")}
                         </p>
                       </div>
                     </div>
@@ -418,7 +420,7 @@ const Home = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Date</p>
                   <p className="font-medium">
-                    {format(new Date(selectedTransaction.date), "MMMM d, yyyy")}
+                    {format(new Date(selectedTransaction.transaction_date || selectedTransaction.date), "MMMM d, yyyy")}
                   </p>
                 </div>
                 <div>

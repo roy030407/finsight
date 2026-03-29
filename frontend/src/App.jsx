@@ -1,6 +1,8 @@
 import useStore from "./store";
-import Home from "./pages/Home";
 import DashboardPage from "./pages/home";
+import SummaryPage from "./pages/summary";
+import Home from "./pages/Home";
+import OptimisePage from "./pages/OptimisePage";
 import { useEffect } from "react";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
@@ -39,14 +41,6 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/settings"
               element={
                 <ProtectedRoute>
@@ -63,6 +57,14 @@ function App() {
               }
             />
             <Route
+              path="/optimise"
+              element={
+                <ProtectedRoute>
+                  <OptimisePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/categories"
               element={
                 <ProtectedRoute>
@@ -75,6 +77,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ReportsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/summary"
+              element={
+                <ProtectedRoute>
+                  <SummaryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
                 </ProtectedRoute>
               }
             />

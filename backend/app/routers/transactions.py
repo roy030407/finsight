@@ -85,12 +85,12 @@ async def create_transaction(
     db_transaction = Transaction(
         user_id=current_user.id,
         amount=Decimal(str(transaction.amount)),
-        type=TransactionType(transaction.type),
+        type=TransactionType(transaction.transaction_type),
         category=transaction.category,
         description=transaction.description,
-        date=transaction.date,
+        date=transaction.transaction_date,
         payment_mode=transaction.payment_mode,
-        account=transaction.account
+        account=getattr(transaction, 'account', None)
     )
     db.add(db_transaction)
     await db.flush()  # Get the ID without committing
@@ -107,7 +107,7 @@ async def create_transaction(
     await db.commit()
     await db.refresh(db_transaction)
     
-    return TransactionOut.from_orm(db_transaction)
+    return TransactionOut.model_validate(db_transaction)
 
 
 @router.get("/", response_model=List[TransactionOut])
@@ -147,7 +147,7 @@ async def list_transactions(
     result = await db.execute(query)
     transactions = result.scalars().all()
     
-    return [TransactionOut.from_orm(t) for t in transactions]
+    return [TransactionOut.model_validate(t) for t in transactions]
 
 
 @router.put("/{transaction_id}", response_model=TransactionOut)
@@ -332,4 +332,4 @@ async def get_transaction(
             detail="Transaction not found or you don't have permission to access it"
         )
     
-    return TransactionOut.from_orm(transaction)
+    return TransactionOut.model_validate(transaction)

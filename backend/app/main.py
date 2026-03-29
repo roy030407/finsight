@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.database.database import create_tables
 from app.models import *  # must be before create_tables()
-from app.routers import auth, category, transactions
+from app.routers import auth, category, transactions, analytics
 
 # Create database tables on startup
 create_tables()
@@ -32,6 +32,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(category.router)
 app.include_router(transactions.router, prefix="/transactions", tags=["transactions"])
+app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 
 @app.get("/health")
 async def health_check():
