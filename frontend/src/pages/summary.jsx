@@ -26,10 +26,16 @@ import { Plus, Search, X, Trash2, Calendar, Filter } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/api/axios";
 import useStore from "@/store";
+import { formatCurrency, formatDate } from "@/utils/format";
 
 const Summary = () => {
   const { user } = useStore((state) => state.auth);
   const queryClient = useQueryClient();
+  
+  // Set page title
+  useEffect(() => {
+    document.title = "FinSight | Summary";
+  }, []);
   
   // State for filters and pagination
   const [filters, setFilters] = useState({
@@ -138,13 +144,6 @@ const Summary = () => {
       queryClient.invalidateQueries(["transactions"]);
     },
   });
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(amount);
-  };
 
   const handleAddTransaction = (e) => {
     e.preventDefault();

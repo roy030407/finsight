@@ -1,21 +1,17 @@
 from pydantic_settings import BaseSettings
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class Settings(BaseSettings):
     environment: str = "development"
     debug: bool = True
     database_url: str
-
-    # Auth configs
+    gemini_api_key: str = ""
+    alpha_vantage_key: str = ""
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
-    class Config:
-        env_file = ".env"
+    model_config = {"env_file": ".env", "extra": "ignore"}
 
 
 settings = Settings()

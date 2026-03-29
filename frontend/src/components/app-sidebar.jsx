@@ -29,7 +29,7 @@ export function AppSidebar({ ...props }) {
 
   const data = {
     user: {
-      name: user ? user.username : null,
+      name: user ? (user.full_name || user.username) : null,
       email: user ? user.email : null,
       avatar: "/avatars/shadcn.jpg",
     },

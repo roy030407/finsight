@@ -44,13 +44,13 @@ export const columns = [
           <Button
             variant="outline"
             size="sm"
-            onClick={() => console.log("Edit", category)}>
+            onClick={() => {}}>
             Edit
           </Button>
           <Button
             variant="destructive"
             size="sm"
-            onClick={() => console.log("Delete", category)}>
+            onClick={() => {}}>
             Delete
           </Button>
         </div>

@@ -2,20 +2,18 @@ import useStore from "./store";
 import DashboardPage from "./pages/home";
 import SummaryPage from "./pages/summary";
 import Home from "./pages/Home";
-import OptimisePage from "./pages/OptimisePage";
+import Optimise from "./pages/OptimisePage";
 import GrowPage from "./pages/Grow";
+import AIChatPage from "./pages/AIChat";
 import { useEffect } from "react";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
-import ReportsPage from "./pages/reports";
-import SettingsPage from "./pages/settings";
-import TransactionsPage from "./pages/transactions";
-import CategoriesPage from "./pages/categories/categories";
-import ProtectedRoute from "./components/protected-routes";
+import ProtectedRoute, { PublicRoute } from "./components/protected-routes";
 import { ThemeProvider } from "./components/theme-provider";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,73 +36,22 @@ function App() {
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <BrowserRouter>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <SettingsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/transactions"
-              element={
-                <ProtectedRoute>
-                  <TransactionsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/optimise"
-              element={
-                <ProtectedRoute>
-                  <OptimisePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/categories"
-              element={
-                <ProtectedRoute>
-                  <CategoriesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <ProtectedRoute>
-                  <ReportsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/summary"
-              element={
-                <ProtectedRoute>
-                  <SummaryPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/grow"
-              element={
-                <ProtectedRoute>
-                  <GrowPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+            <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
+            
+            {/* Protected routes */}
+            <Route path="/" element={<ProtectedRoute />}>
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="summary" element={<SummaryPage />} />
+              <Route path="optimise" element={<Optimise />} />
+              <Route path="grow" element={<GrowPage />} />
+              <Route path="chat" element={<AIChatPage />} />
+            </Route>
+            
+            {/* Legacy redirects */}
+            <Route path="/ai-chat" element={<Navigate to="/chat" replace />} />
           </Routes>
         </BrowserRouter>
         <Toaster />

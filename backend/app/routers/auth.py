@@ -20,6 +20,7 @@ def user_response(user: User):
         "id": user.id,
         "username": user.username,
         "email": user.email,
+        "full_name": user.full_name,
     }
 
 
@@ -38,7 +39,10 @@ async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
     # create user
     hashed_password = hash_password(user.password)
     new_user = User(
-        username=user.username, email=user.email, hashed_password=hashed_password
+        username=user.username, 
+        email=user.email, 
+        hashed_password=hashed_password,
+        full_name=user.full_name if hasattr(user, 'full_name') and user.full_name else user.username
     )
     db.add(new_user)
     await db.commit()

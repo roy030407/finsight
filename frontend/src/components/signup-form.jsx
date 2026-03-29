@@ -17,13 +17,14 @@ export function SignupForm({ className, ...props }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const signup = useStore((state) => state.signup);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await signup({ username, email, password });
+      await signup({ username, email, password, full_name: fullName });
       navigate("/dashboard");
     } catch (err) {
       console.error("Signup failed:", err);
@@ -49,6 +50,16 @@ export function SignupForm({ className, ...props }) {
                 </span>
               </div>
               <div className="grid gap-6">
+                <div className="grid gap-3">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="John Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
                 <div className="grid gap-3">
                   <Label htmlFor="username">Username</Label>
                   <Input

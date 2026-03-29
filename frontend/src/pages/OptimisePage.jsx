@@ -17,6 +17,7 @@ import { X, TrendingUp, TrendingDown, Minus, Brain, Target, DollarSign, AlertCir
 import { toast } from "sonner";
 import api from "@/api/axios";
 import useStore from "@/store";
+import { formatCurrency, formatDate } from "@/utils/format";
 
 const COLORS = {
   primary: "#3b82f6",
@@ -40,6 +41,11 @@ const Optimise = () => {
   const { user } = useStore((state) => state.auth);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [classificationResult, setClassificationResult] = useState(null);
+  
+  // Set page title
+  React.useEffect(() => {
+    document.title = "FinSight | Optimise";
+  }, []);
   const [classificationLoading, setClassificationLoading] = useState(false);
   const [dismissedAlerts, setDismissedAlerts] = useState(new Set());
   const [description, setDescription] = useState("");
@@ -135,6 +141,7 @@ const Optimise = () => {
   }
 
   const insights = insightsData || {};
+  const safeExpenses = insights.total_expenses > 0 ? insights.total_expenses : 1;
 
   return (
     <div className="space-y-6 p-6">
@@ -288,7 +295,7 @@ const Optimise = () => {
                         </div>
                       </div>
                       <Badge variant={selectedCategory === category ? "default" : "secondary"}>
-                        {Math.round((data.total_amount / (insights.total_expenses || 1)) * 100)}%
+                        {Math.round((data.total_amount / safeExpenses) * 100)}%
                       </Badge>
                     </div>
                     <div className="text-2xl font-bold text-gray-900">

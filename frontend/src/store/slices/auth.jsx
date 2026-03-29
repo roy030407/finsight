@@ -37,7 +37,7 @@ const createAuthSlice = (set, get) => ({
       const { access_token, user } = res.data;
 
       // persist to localStorage
-      localStorage.setItem("accessToken", access_token);
+      localStorage.setItem("finsight_token", access_token);
       localStorage.setItem("user", JSON.stringify(user));
 
       // set default auth header
@@ -74,7 +74,7 @@ const createAuthSlice = (set, get) => ({
 
       const { access_token, user } = res.data;
 
-      localStorage.setItem("accessToken", access_token);
+      localStorage.setItem("finsight_token", access_token);
       localStorage.setItem("user", JSON.stringify(user));
 
       api.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
@@ -95,7 +95,7 @@ const createAuthSlice = (set, get) => ({
   },
 
   logout: () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("finsight_token");
     localStorage.removeItem("user");
     delete api.defaults.headers.common["Authorization"];
     set({
@@ -109,7 +109,7 @@ const createAuthSlice = (set, get) => ({
   },
 
   rehydrateAuth: () => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("finsight_token");
     const userRaw = localStorage.getItem("user");
 
     if (token && !isTokenExpired(token)) {
@@ -124,7 +124,7 @@ const createAuthSlice = (set, get) => ({
         },
       });
     } else {
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("finsight_token");
       localStorage.removeItem("user");
       delete api.defaults.headers.common["Authorization"];
       set({

@@ -1,19 +1,36 @@
 import useStore from "../store";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import Layout from "./Layout";
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute() {
   const { isAuthenticated, rehydrated, user } = useStore((state) => state.auth);
 
   // If still rehydrating, show nothing (or a loader/spinner)
   if (!rehydrated) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return <Layout><Outlet /></Layout>;
 }
 
 export default ProtectedRoute;
+
+// Component to redirect authenticated users away from auth pages
+export function PublicRoute({ children }) {
+  const { isAuthenticated, rehydrated } = useStore((state) => state.auth);
+
+  // If still rehydrating, show nothing (or a loader/spinner)
+  if (!rehydrated) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}

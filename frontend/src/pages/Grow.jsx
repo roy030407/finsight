@@ -16,6 +16,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { formatCurrency, formatDate } from "@/utils/format";
 import { 
   Plus, 
   Target, 
@@ -48,6 +49,11 @@ const Grow = () => {
   const { user } = useStore((state) => state.auth);
   const queryClient = useQueryClient();
   
+  // Set page title
+  useEffect(() => {
+    document.title = "FinSight | Grow";
+  }, []);
+  
   // Goals state
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [goalForm, setGoalForm] = useState({
@@ -79,10 +85,13 @@ const Grow = () => {
     queryFn: async () => {
       try {
         const response = await api.get("/goals/");
-        return response.data;
+        const data = response.data;
+        // Ensure we always return an array
+        return Array.isArray(data) ? data : [];
       } catch (error) {
+        console.error("Failed to load goals:", error);
         toast.error("Failed to load goals");
-        throw error;
+        return []; // Return empty array on error
       }
     },
   });
@@ -97,10 +106,23 @@ const Grow = () => {
     queryFn: async () => {
       try {
         const response = await api.get("/investments/portfolio-value");
-        return response.data;
+        const data = response.data;
+        // Ensure we have a valid structure with holdings array
+        return {
+          ...data,
+          holdings: Array.isArray(data?.holdings) ? data.holdings : []
+        };
       } catch (error) {
+        console.error("Failed to load portfolio:", error);
         toast.error("Failed to load portfolio");
-        throw error;
+        // Return default structure on error
+        return {
+          total_value: 0,
+          total_gain_loss: 0,
+          total_gain_loss_pct: 0,
+          holdings: [],
+          live_data: false
+        };
       }
     },
   });
@@ -355,11 +377,14 @@ const Grow = () => {
               </Card>
             ))}
           </div>
-        ) : goalsData && goalsData.length > 0 ? (
+        ) : Array.isArray(goalsData) && goalsData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {goalsData.map((goal) => {
               const daysRemaining = calculateDaysRemaining(goal.deadline);
               const isOverdue = daysRemaining !== null && daysRemaining < 0;
+              const progress = goal.target_amount > 0 
+                ? Math.min((goal.current_amount / goal.target_amount) * 100, 100) 
+                : 0;
               
               return (
                 <Card key={goal.id} className="relative">
@@ -378,9 +403,9 @@ const Grow = () => {
                       <div>
                         <div className="flex justify-between text-sm text-gray-600 mb-1">
                           <span>Progress</span>
-                          <span>{Math.round(goal.progress_percentage)}%</span>
+                          <span>{Math.round(progress)}%</span>
                         </div>
-                        <Progress value={goal.progress_percentage} className="w-full" />
+                        <Progress value={progress} className="w-full" />
                       </div>
                       
                       <div className="flex justify-between text-sm">
@@ -442,8 +467,7 @@ const Grow = () => {
           <Card>
             <CardContent className="text-center py-8">
               <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No goals yet</p>
-              <p className="text-sm text-gray-500">Create your first financial goal to get started</p>
+              <p className="text-gray-600">No goals yet. Add your first financial goal!</p>
             </CardContent>
           </Card>
         )}
@@ -572,7 +596,7 @@ const Grow = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {portfolioData.holdings.map((holding) => (
+                      {portfolioData?.holdings?.map((holding) => (
                         <tr key={holding.id} className="border-b hover:bg-gray-50">
                           <td className="p-2 font-medium">{holding.symbol}</td>
                           <td className="p-2">{holding.name}</td>

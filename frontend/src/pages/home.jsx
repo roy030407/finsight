@@ -36,24 +36,41 @@ import { ArrowUp, ArrowDown, TrendingUp, Wallet, DollarSign } from "lucide-react
 import { toast } from "sonner";
 import api from "@/api/axios";
 import useStore from "@/store";
+import { formatCurrency, formatDate, getTransactionIcon } from "@/utils/format";
 
 const COLORS = {
-  primary: "#3b82f6",
-  success: "#22c55e",
-  danger: "#ef4444",
-  warning: "#f59e0b",
-  info: "#8b5cf6",
+  primary: "var(--color-chart-1)",
+  success: "var(--color-chart-2)",
+  danger: "var(--color-chart-4)",
+  warning: "var(--color-chart-3)",
+  info: "var(--color-chart-5)",
 };
 
 const CATEGORIES_COLORS = [
-  "#3b82f6", "#ef4444", "#22c55e", "#f59e0b", "#8b5cf6",
-  "#ec4899", "#06b6d4", "#f97316", "#6366f1", "#84cc16"
+  "var(--color-chart-1)", "var(--color-chart-4)", "var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-5)",
+  "var(--color-sidebar-accent)", "var(--color-sidebar-primary)", "var(--color-chart-4)", "var(--color-chart-1)", "var(--color-chart-2)"
 ];
 
 const Home = () => {
   const { user } = useStore((state) => state.auth);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+
+  // Set page title
+  useEffect(() => {
+    document.title = "FinSight | Dashboard";
+  }, []);
+
+  // Time-based greeting
+  const getTimeBasedGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const greeting = getTimeBasedGreeting();
+  const name = user?.full_name || user?.username || "there";
 
   // Fetch transaction summary
   const {
@@ -65,10 +82,8 @@ const Home = () => {
     queryFn: async () => {
       try {
         const response = await api.get("/transactions/summary");
-        console.log("Summary data:", response.data); // Debug log
         return response.data;
       } catch (error) {
-        console.error("Summary error:", error); // Debug log
         toast.error("Failed to load transaction summary");
         throw error;
       }
@@ -95,31 +110,6 @@ const Home = () => {
 
   const currentDate = format(new Date(), "EEEE, MMMM d, yyyy");
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(amount);
-  };
-
-  const getTransactionIcon = (category) => {
-    const icons = {
-      "Food & Dining": "🍔",
-      "Transportation": "🚗",
-      "Shopping": "🛍️",
-      "Entertainment": "🎬",
-      "Bills & Utilities": "💡",
-      "Healthcare": "🏥",
-      "Education": "📚",
-      "Travel": "✈️",
-      "Investment": "📈",
-      "Salary": "💰",
-      "Freelance": "💻",
-      "Other": "📝",
-    };
-    return icons[category] || "📝";
-  };
-
   const handleTransactionClick = (transaction) => {
     setSelectedTransaction(transaction);
     setShowDetailModal(true);
@@ -130,7 +120,7 @@ const Home = () => {
       <div className="flex items-center justify-center min-h-screen">
         <Card className="w-96">
           <CardContent className="p-6 text-center">
-            <p className="text-red-600">Failed to load dashboard data</p>
+            <p className="text-destructive">Failed to load dashboard data</p>
             <Button
               onClick={() => window.location.reload()}
               className="mt-4"
@@ -150,7 +140,7 @@ const Home = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            Good morning, {user?.full_name || user?.username || "User"}
+            {greeting}, {name}
           </h1>
           <p className="text-muted-foreground">{currentDate}</p>
         </div>
@@ -229,7 +219,7 @@ const Home = () => {
         <CardHeader>
           <CardTitle>Cashflow Trend</CardTitle>
           <CardDescription>
-            Income vs expenses over the last 6 months
+            Income vs expenses over last 6 months
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -338,7 +328,7 @@ const Home = () => {
                   <Skeleton key={i} className="h-12" />
                 ))}
               </div>
-            ) : recentTransactions?.length > 0 ? (
+            ) : Array.isArray(recentTransactions) && recentTransactions.length > 0 ? (
               <div className="space-y-3">
                 {recentTransactions.map((transaction) => (
                   <div
@@ -355,7 +345,7 @@ const Home = () => {
                           {transaction.description || transaction.category}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {format(new Date(transaction.transaction_date || transaction.date), "MMM d, yyyy")}
+                          {formatDate(new Date(transaction.transaction_date || transaction.date))}
                         </p>
                       </div>
                     </div>
@@ -420,7 +410,7 @@ const Home = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Date</p>
                   <p className="font-medium">
-                    {format(new Date(selectedTransaction.transaction_date || selectedTransaction.date), "MMMM d, yyyy")}
+                    {formatDate(new Date(selectedTransaction.transaction_date || selectedTransaction.date))}
                   </p>
                 </div>
                 <div>

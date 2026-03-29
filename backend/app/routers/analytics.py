@@ -61,10 +61,17 @@ async def get_analytics_insights(
         for transaction in transactions:
             category = transaction.category
             if category not in category_totals:
-                category_totals[category] = {"count": 0, "total": 0.0, "avg": 0.0}
+                category_totals[category] = {"count": 0, "total": 0.0}
             
             category_totals[category]["count"] += 1
             category_totals[category]["total"] += float(transaction.amount)
+        
+        # Calculate averages for each category
+        for cat in category_totals:
+            if category_totals[cat]["count"] > 0:
+                category_totals[cat]["average"] = category_totals[cat]["total"] / category_totals[cat]["count"]
+            else:
+                category_totals[cat]["average"] = 0.0
         
         # Find top spending category (excluding income)
         expense_categories = {
@@ -103,8 +110,9 @@ async def get_analytics_insights(
         unusual_transactions = unusual_transactions[:5]  # Top 5 unusual
         
         # Calculate monthly trend (last 3 months)
+        from datetime import timedelta
         current_date = datetime.now()
-        three_months_ago = current_date.replace(month=current_date.month - 3)
+        three_months_ago = current_date - timedelta(days=90)  # Safer than month arithmetic
         
         recent_transactions = [
             t for t in transactions 
@@ -170,7 +178,10 @@ async def get_analytics_insights(
         }
         
     except Exception as e:
+        import traceback
+        print(f"Analytics error: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
-            detail="Failed to generate insights"
+            detail=f"Failed to generate insights: {str(e)}"
         )
