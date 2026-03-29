@@ -62,6 +62,13 @@ async def chat(
     Chat endpoint for AI-powered financial assistance
     """
     try:
+        # Check if RAG pipeline is available
+        if not rag_pipeline:
+            raise HTTPException(
+                status_code=503,
+                detail="AI chat service is currently unavailable. Please try again later."
+            )
+        
         # Get user's financial context
         user_context = rag_pipeline.get_user_context(current_user.id, db)
         
@@ -87,6 +94,8 @@ async def chat(
             sources_used=result["sources_used"]
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         # Never expose raw errors to frontend
         print(f"Chat endpoint error: {e}")

@@ -266,5 +266,13 @@ Please provide a helpful answer based on the information above and your general 
             }
 
 
-# Global instance
-rag_pipeline = RAGPipeline()
+# Global instance - initialize safely
+rag_pipeline = None
+try:
+    print("🔄 Initializing RAG pipeline...")
+    rag_pipeline = RAGPipeline()
+    print("✅ RAG pipeline initialized successfully")
+except Exception as e:
+    print(f"❌ RAG pipeline initialization failed: {e}")
+    print("⚠️ AI chat functionality will be disabled")
+    rag_pipeline = None

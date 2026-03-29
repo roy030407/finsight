@@ -244,6 +244,14 @@ class TransactionClassifier:
 # Global classifier instance
 classifier = TransactionClassifier()
 
-# Initialize model on startup
-if not classifier.is_trained:
-    classifier.train()
+# Initialize model on startup with error handling
+try:
+    if not classifier.is_trained:
+        success = classifier.train()
+        if success:
+            print("✅ ML classifier initialized successfully")
+        else:
+            print("⚠️ ML classifier training failed, will use fallback")
+except Exception as e:
+    print(f"❌ ML classifier initialization failed: {e}")
+    print("⚠️ Transaction categorization will use fallback rules")
