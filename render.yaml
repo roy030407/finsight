@@ -61,6 +61,6 @@ services:
         destination: /index.html # Critical: enables React Router SPA routing
     envVars:
       - key: VITE_API_URL
-        value: https://finsight-api.onrender.com # Update if your backend URL differs
+        value: https://finsight-api-rygp.onrender.com # Update if your backend URL differs
       - key: NODE_VERSION
         value: "20.11.0"
