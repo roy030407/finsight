@@ -33,7 +33,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: ALLOWED_ORIGINS
-        value: https://finsight-ui.onrender.com # Update if your frontend URL differs
+        value: https://finsight-ow1i.onrender.com # Update if your frontend URL differs
       - key: PYTHON_VERSION
         value: "3.11.0"
 
