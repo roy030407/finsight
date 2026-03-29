@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import {
   Card,
   CardContent,
@@ -14,47 +13,47 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { formatCurrency, formatDate } from "@/utils/format";
-import { 
-  Plus, 
-  Target, 
-  TrendingUp, 
-  TrendingDown, 
-  AlertCircle, 
-  DollarSign,
-  X,
-  Wallet,
+import { formatCurrency } from "@/utils/format";
+import {
+  Plus,
+  Target,
+  AlertCircle,
   PiggyBank,
   Home,
   Car,
   Plane,
-  GraduationCap
+  GraduationCap,
 } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/api/axios";
 import useStore from "@/store";
 
 const GOAL_ICONS = {
-  "Emergency": <AlertCircle className="h-6 w-6" />,
-  "Travel": <Plane className="h-6 w-6" />,
-  "Education": <GraduationCap className="h-6 w-6" />,
-  "Home": <Home className="h-6 w-6" />,
-  "Car": <Car className="h-6 w-6" />,
-  "General": <PiggyBank className="h-6 w-6" />,
+  Emergency: <AlertCircle className="h-6 w-6" />,
+  Travel: <Plane className="h-6 w-6" />,
+  Education: <GraduationCap className="h-6 w-6" />,
+  Home: <Home className="h-6 w-6" />,
+  Car: <Car className="h-6 w-6" />,
+  General: <PiggyBank className="h-6 w-6" />,
 };
 
 const Grow = () => {
   const { user } = useStore((state) => state.auth);
   const queryClient = useQueryClient();
-  
-  // Set page title
+
   useEffect(() => {
     document.title = "FinSight | Grow";
   }, []);
-  
-  // Goals state
+
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [goalForm, setGoalForm] = useState({
     title: "",
@@ -62,72 +61,62 @@ const Grow = () => {
     target_amount: "",
     current_amount: "",
     category: "General",
-    deadline: ""
+    deadline: "",
   });
-  
-  // Investments state
+
   const [showInvestmentModal, setShowInvestmentModal] = useState(false);
   const [investmentForm, setInvestmentForm] = useState({
     symbol: "",
     name: "",
     quantity: "",
-    average_buy_price: ""
+    average_buy_price: "",
   });
   const [quickAddAmount, setQuickAddAmount] = useState("");
+  const [activeGoalId, setActiveGoalId] = useState(null);
 
-  // Fetch goals
   const {
     data: goalsData,
     isLoading: goalsLoading,
-    error: goalsError,
   } = useQuery({
     queryKey: ["goals"],
     queryFn: async () => {
       try {
         const response = await api.get("/goals/");
         const data = response.data;
-        // Ensure we always return an array
         return Array.isArray(data) ? data : [];
       } catch (error) {
-        console.error("Failed to load goals:", error);
         toast.error("Failed to load goals");
-        return []; // Return empty array on error
+        return [];
       }
     },
   });
 
-  // Fetch portfolio
   const {
     data: portfolioData,
     isLoading: portfolioLoading,
-    error: portfolioError,
   } = useQuery({
     queryKey: ["investments", "portfolio"],
     queryFn: async () => {
       try {
         const response = await api.get("/investments/portfolio-value");
         const data = response.data;
-        // Ensure we have a valid structure with holdings array
         return {
           ...data,
-          holdings: Array.isArray(data?.holdings) ? data.holdings : []
+          holdings: Array.isArray(data?.holdings) ? data.holdings : [],
         };
       } catch (error) {
-        console.error("Failed to load portfolio:", error);
         toast.error("Failed to load portfolio");
-        // Return default structure on error
         return {
           total_value: 0,
           total_gain_loss: 0,
           total_gain_loss_pct: 0,
           holdings: [],
-          live_data: false
+          live_data: false,
         };
       }
     },
   });
 
-  // Create goal mutation
   const createGoalMutation = useMutation({
     mutationFn: async (goalData) => {
       const response = await api.post("/goals/", goalData);
@@ -142,16 +131,15 @@ const Grow = () => {
         target_amount: "",
         current_amount: "",
         category: "General",
-        deadline: ""
+        deadline: "",
       });
       queryClient.invalidateQueries(["goals"]);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to create goal");
     },
   });
 
-  // Update goal mutation
   const updateGoalMutation = useMutation({
     mutationFn: async ({ id, data }) => {
       const response = await api.put(`/goals/${id}`, data);
@@ -159,14 +147,15 @@ const Grow = () => {
     },
     onSuccess: () => {
       toast.success("Goal updated successfully");
+      setActiveGoalId(null);
+      setQuickAddAmount("");
       queryClient.invalidateQueries(["goals"]);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to update goal");
     },
   });
 
-  // Create investment mutation
   const createInvestmentMutation = useMutation({
     mutationFn: async (investmentData) => {
       const response = await api.post("/investments/", investmentData);
@@ -179,29 +168,21 @@ const Grow = () => {
         symbol: "",
         name: "",
         quantity: "",
-        average_buy_price: ""
+        average_buy_price: "",
       });
       queryClient.invalidateQueries(["investments"]);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to add investment");
     },
   });
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(amount);
-  };
 
   const calculateDaysRemaining = (deadline) => {
     if (!deadline) return null;
     const today = new Date();
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   const handleCreateGoal = () => {
@@ -209,14 +190,13 @@ const Grow = () => {
       toast.error("Please fill in required fields");
       return;
     }
-
     createGoalMutation.mutate({
       title: goalForm.title,
       description: goalForm.description,
       target_amount: parseFloat(goalForm.target_amount),
       current_amount: parseFloat(goalForm.current_amount) || 0,
       category: goalForm.category,
-      deadline: goalForm.deadline ? new Date(goalForm.deadline) : null
+      deadline: goalForm.deadline ? new Date(goalForm.deadline) : null,
     });
   };
 
@@ -225,12 +205,11 @@ const Grow = () => {
       toast.error("Please fill in all fields");
       return;
     }
-
     createInvestmentMutation.mutate({
       symbol: investmentForm.symbol.toUpperCase(),
       name: investmentForm.name,
       quantity: parseFloat(investmentForm.quantity),
-      average_buy_price: parseFloat(investmentForm.average_buy_price)
+      average_buy_price: parseFloat(investmentForm.average_buy_price),
     });
   };
 
@@ -239,31 +218,11 @@ const Grow = () => {
       toast.error("Please enter an amount");
       return;
     }
-
     updateGoalMutation.mutate({
       id: goalId,
-      data: {
-        current_amount: currentAmount + parseFloat(quickAddAmount)
-      }
+      data: { current_amount: currentAmount + parseFloat(quickAddAmount) },
     });
-    setQuickAddAmount("");
   };
-
-  if (goalsError || portfolioError) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="w-96">
-          <CardContent className="p-6 text-center">
-            <AlertCircle className="h-8 w-8 text-red-600 mx-auto mb-4" />
-            <p className="text-red-600">Failed to load data</p>
-            <Button onClick={() => window.location.reload()} variant="outline">
-              Retry
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 p-6">
@@ -281,9 +240,7 @@ const Grow = () => {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Create New Goal</DialogTitle>
-                <DialogDescription>
-                  Set a new financial goal to track your progress
-                </DialogDescription>
+                <DialogDescription>Set a new financial goal to track your progress</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -353,7 +310,7 @@ const Grow = () => {
                     />
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={handleCreateGoal}
                   disabled={createGoalMutation.isPending}
                   className="w-full"
@@ -367,7 +324,7 @@ const Grow = () => {
 
         {goalsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
+            {[...Array(3)].map((_, i) => (
               <Card key={i}>
                 <CardContent className="p-6">
                   <Skeleton className="h-4 w-3/4 mb-2" />
@@ -382,10 +339,11 @@ const Grow = () => {
             {goalsData.map((goal) => {
               const daysRemaining = calculateDaysRemaining(goal.deadline);
               const isOverdue = daysRemaining !== null && daysRemaining < 0;
-              const progress = goal.target_amount > 0 
-                ? Math.min((goal.current_amount / goal.target_amount) * 100, 100) 
-                : 0;
-              
+              const progress =
+                goal.target_amount > 0
+                  ? Math.min((goal.current_amount / goal.target_amount) * 100, 100)
+                  : 0;
+
               return (
                 <Card key={goal.id} className="relative">
                   <CardContent className="p-6">
@@ -394,11 +352,7 @@ const Grow = () => {
                         {GOAL_ICONS[goal.category] || GOAL_ICONS["General"]}
                         <h3 className="font-semibold">{goal.title}</h3>
                       </div>
-                      {goal.is_completed && (
-                        <Badge className="bg-green-100 text-green-800">Completed</Badge>
-                      )}
                     </div>
-                    
                     <div className="space-y-3">
                       <div>
                         <div className="flex justify-between text-sm text-gray-600 mb-1">
@@ -407,12 +361,10 @@ const Grow = () => {
                         </div>
                         <Progress value={progress} className="w-full" />
                       </div>
-                      
                       <div className="flex justify-between text-sm">
                         <span>Current: {formatCurrency(goal.current_amount)}</span>
                         <span>Target: {formatCurrency(goal.target_amount)}</span>
                       </div>
-                      
                       {daysRemaining !== null && (
                         <div className="text-sm">
                           {isOverdue ? (
@@ -425,21 +377,8 @@ const Grow = () => {
                         </div>
                       )}
                     </div>
-                    
-                    <div className="flex gap-2 mt-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setQuickAddAmount("");
-                          // In a real app, this would open a quick add modal
-                        }}
-                      >
-                        <Plus className="h-3 w-3 mr-1" />
-                        Add Money
-                      </Button>
-                      
-                      {quickAddAmount && (
+                    <div className="mt-4">
+                      {activeGoalId === goal.id ? (
                         <div className="flex items-center gap-2">
                           <Input
                             type="number"
@@ -455,7 +394,23 @@ const Grow = () => {
                           >
                             Add
                           </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setActiveGoalId(null)}
+                          >
+                            Cancel
+                          </Button>
                         </div>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setActiveGoalId(goal.id)}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          Add Money
+                        </Button>
                       )}
                     </div>
                   </CardContent>
@@ -487,9 +442,7 @@ const Grow = () => {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Add Investment</DialogTitle>
-                <DialogDescription>
-                  Add a new investment to your portfolio
-                </DialogDescription>
+                <DialogDescription>Add a new investment to your portfolio</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -502,9 +455,9 @@ const Grow = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="name">Name *</Label>
+                  <Label htmlFor="inv-name">Name</Label>
                   <Input
-                    id="name"
+                    id="inv-name"
                     value={investmentForm.name}
                     onChange={(e) => setInvestmentForm({ ...investmentForm, name: e.target.value })}
                     placeholder="e.g., Apple Inc."
@@ -532,7 +485,7 @@ const Grow = () => {
                     />
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={handleCreateInvestment}
                   disabled={createInvestmentMutation.isPending}
                   className="w-full"
@@ -549,7 +502,7 @@ const Grow = () => {
             <CardContent className="p-6">
               <Skeleton className="h-4 w-1/4 mb-4" />
               <div className="space-y-3">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(3)].map((_, i) => (
                   <Skeleton key={i} className="h-12 w-full" />
                 ))}
               </div>
@@ -564,7 +517,6 @@ const Grow = () => {
                 </AlertDescription>
               </Alert>
             )}
-            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -574,10 +526,11 @@ const Grow = () => {
                   </Badge>
                 </CardTitle>
                 <CardDescription>
-                  Total Gain/Loss: 
+                  Total Gain/Loss:{" "}
                   <span className={portfolioData.total_gain_loss >= 0 ? "text-green-600" : "text-red-600"}>
-                    {formatCurrency(portfolioData.total_gain_loss)} 
-                    ({portfolioData.total_gain_loss_pct >= 0 ? '+' : ''}{portfolioData.total_gain_loss_pct}%)
+                    {formatCurrency(portfolioData.total_gain_loss)} (
+                    {portfolioData.total_gain_loss_pct >= 0 ? "+" : ""}
+                    {portfolioData.total_gain_loss_pct}%)
                   </span>
                 </CardDescription>
               </CardHeader>
@@ -606,7 +559,8 @@ const Grow = () => {
                           <td className="p-2 text-right font-medium">{formatCurrency(holding.current_value)}</td>
                           <td className="p-2 text-right">
                             <span className={holding.gain_loss_pct >= 0 ? "text-green-600" : "text-red-600"}>
-                              {holding.gain_loss_pct >= 0 ? '+' : ''}{holding.gain_loss_pct}%
+                              {holding.gain_loss_pct >= 0 ? "+" : ""}
+                              {holding.gain_loss_pct}%
                             </span>
                           </td>
                         </tr>
@@ -622,5 +576,6 @@ const Grow = () => {
     </div>
   );
 };
+
 
 export default Grow;
