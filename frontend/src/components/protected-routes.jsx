@@ -1,6 +1,6 @@
 import useStore from "../store";
 import { Navigate, Outlet } from "react-router-dom";
-import Layout from "./Layout";
+import Layout from "./layout";
 
 function ProtectedRoute() {
   const { isAuthenticated, rehydrated, user } = useStore((state) => state.auth);
