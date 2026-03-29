@@ -35,19 +35,19 @@ export function AppSidebar({ ...props }) {
     },
     teams: [
       {
-        name: "Uvolve AI",
+        name: "Personal",
         logo: GalleryVerticalEnd,
-        plan: "Enterprise",
-      },
-      {
-        name: "Morningside AI",
-        logo: AudioWaveform,
-        plan: "Startup",
-      },
-      {
-        name: "Integraticus",
-        logo: Command,
         plan: "Free",
+      },
+      {
+        name: "Business",
+        logo: AudioWaveform,
+        plan: "Pro",
+      },
+      {
+        name: "Enterprise",
+        logo: Command,
+        plan: "Enterprise",
       },
     ],
     navMain: [

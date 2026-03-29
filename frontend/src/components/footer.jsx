@@ -33,17 +33,17 @@ const defaultSections = [
 const defaultSocialLinks = [
   {
     icon: <FaEnvelope className="size-5" />,
-    href: "mailto:ali.shanawer.2004@gmail.com",
+    href: "mailto:roy.harwani@example.com",
     label: "Email",
   },
   {
     icon: <FaLinkedin className="size-5" />,
-    href: "https://www.linkedin.com/in/alishanawer/",
+    href: "https://www.linkedin.com/in/royharwani/",
     label: "LinkedIn",
   },
   {
     icon: <FaGithub className="size-5" />,
-    href: "https://github.com/alishanawer",
+    href: "https://github.com/royharwani",
     label: "GitHub",
   },
 ];
@@ -58,13 +58,13 @@ const Footer = ({
     url: "https://www.shadcnblocks.com",
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
     alt: "logo",
-    title: "Personal Finance Dashboard",
+    title: "FinSight",
   },
 
   sections = defaultSections,
   description = "Track expenses, analyze spending, and make smarter financial decisions — all in one clean, powerful dashboard.",
   socialLinks = defaultSocialLinks,
-  copyright = "© 2025 Ali Shanawer. All rights reserved.",
+  copyright = "© 2025 Roy Harwani. All rights reserved.",
   legalLinks = defaultLegalLinks,
 }) => {
   return (

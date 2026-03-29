@@ -2,9 +2,10 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
-from app.api.deps import get_db
+from app.database.database import get_db
 from app.core.config import settings
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
@@ -23,13 +24,14 @@ def user_response(user: User):
 
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
-def signup(user: UserCreate, db: Session = Depends(get_db)):
+async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
     # check if user already exists
-    existing_user = (
-        db.query(User)
-        .filter((User.username == user.username) | (User.email == user.email))
-        .first()
+    result = await db.execute(
+        select(User).where(
+            (User.username == user.username) | (User.email == user.email)
+        )
     )
+    existing_user = result.scalar_one_or_none()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username or email already taken")
 
@@ -39,8 +41,8 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
         username=user.username, email=user.email, hashed_password=hashed_password
     )
     db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    await db.commit()
+    await db.refresh(new_user)
 
     # generate JWT
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
@@ -57,14 +59,15 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login")
-def login(
+async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     email = form_data.username
     password = form_data.password
 
-    user = db.query(User).filter(User.email == email).first()
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
