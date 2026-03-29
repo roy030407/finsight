@@ -19,6 +19,9 @@ from app.schemas.transaction import (
 from app.api.deps_auth import get_current_user
 from app.models.user import User
 
+from sqlalchemy import case
+from sqlalchemy import and_, extract, func, or_
+
 router = APIRouter()
 
 
@@ -147,32 +150,6 @@ async def list_transactions(
     return [TransactionOut.from_orm(t) for t in transactions]
 
 
-@router.get("/{transaction_id}", response_model=TransactionOut)
-async def get_transaction(
-    transaction_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """Get a single transaction"""
-    result = await db.execute(
-        select(Transaction).where(
-            and_(
-                Transaction.id == transaction_id,
-                Transaction.user_id == current_user.id
-            )
-        )
-    )
-    transaction = result.scalar_one_or_none()
-    
-    if not transaction:
-        raise HTTPException(
-            status_code=404, 
-            detail="Transaction not found or you don't have permission to access it"
-        )
-    
-    return TransactionOut.from_orm(transaction)
-
-
 @router.put("/{transaction_id}", response_model=TransactionOut)
 async def update_transaction(
     transaction_id: uuid.UUID,
@@ -298,18 +275,8 @@ async def get_transaction_summary(
         select(
             extract('year', Transaction.date).label('year'),
             extract('month', Transaction.date).label('month'),
-            func.sum(
-                func.case(
-                    (Transaction.type == TransactionType.INCOME, Transaction.amount),
-                    else_=0
-                )
-            ).label('income'),
-            func.sum(
-                func.case(
-                    (Transaction.type == TransactionType.EXPENSE, Transaction.amount),
-                    else_=0
-                )
-            ).label('expenses')
+            func.sum(case((Transaction.type == TransactionType.INCOME, Transaction.amount), else_=0)).label('income'),
+            func.sum(case((Transaction.type == TransactionType.EXPENSE, Transaction.amount), else_=0)).label('expenses')
         )
         .where(Transaction.user_id == current_user.id)
         .group_by(
@@ -341,3 +308,28 @@ async def get_transaction_summary(
         by_category=by_category,
         by_month=by_month
     )
+
+@router.get("/{transaction_id}", response_model=TransactionOut)
+async def get_transaction(
+    transaction_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get a single transaction"""
+    result = await db.execute(
+        select(Transaction).where(
+            and_(
+                Transaction.id == transaction_id,
+                Transaction.user_id == current_user.id
+            )
+        )
+    )
+    transaction = result.scalar_one_or_none()
+    
+    if not transaction:
+        raise HTTPException(
+            status_code=404, 
+            detail="Transaction not found or you don't have permission to access it"
+        )
+    
+    return TransactionOut.from_orm(transaction)

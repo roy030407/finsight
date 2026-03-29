@@ -1,9 +1,20 @@
-import Layout from "@/components/layout";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redirect to the main dashboard (Home component)
+    navigate("/");
+  }, [navigate]);
+
   return (
-    <Layout>
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-    </Layout>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <p className="mt-4 text-muted-foreground">Loading dashboard...</p>
+      </div>
+    </div>
   );
 }
