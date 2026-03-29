@@ -3,6 +3,7 @@ import DashboardPage from "./pages/home";
 import SummaryPage from "./pages/summary";
 import Home from "./pages/Home";
 import OptimisePage from "./pages/OptimisePage";
+import GrowPage from "./pages/Grow";
 import { useEffect } from "react";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
@@ -85,6 +86,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SummaryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/grow"
+              element={
+                <ProtectedRoute>
+                  <GrowPage />
                 </ProtectedRoute>
               }
             />
