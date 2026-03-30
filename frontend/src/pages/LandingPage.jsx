@@ -221,121 +221,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Testimonials */}
-      <div className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Loved by thousands</h2>
-            <p className="max-w-2xl mx-auto text-xl text-gray-600">
-              See what our users have to say about their financial transformation
-            </p>
-          </div>
-          
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="bg-white p-8 rounded-2xl shadow-sm">
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-6">
-                "FinSight completely transformed how I manage my money. The AI insights helped me save $2,400 in just 3 months!"
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  JD
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">John Doe</p>
-                  <p className="text-sm text-gray-500">Software Engineer</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white p-8 rounded-2xl shadow-sm">
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-6">
-                "The best financial app I've ever used. The budget tracking features are incredibly intuitive and the AI advisor is spot on."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  SM
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">Sarah Miller</p>
-                  <p className="text-sm text-gray-500">Marketing Director</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white p-8 rounded-2xl shadow-sm">
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-6">
-                "Finally, a finance app that gets it. The investment tracking alone has saved me hours every month."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  MC
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">Mike Chen</p>
-                  <p className="text-sm text-gray-500">Business Owner</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Ready to transform your financial future?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join over 10,000 users who are already building wealth smarter with FinSight. Start your free 14-day trial today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-600 bg-white rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
-            >
-              Start Free Trial
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-blue-600 transition-colors"
-            >
-              Sign In
-            </Link>
-          </div>
-          <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-blue-100">
-            <div className="flex items-center">
-              <CheckCircle2 className="w-5 h-5 mr-2" />
-              No credit card required
-            </div>
-            <div className="flex items-center">
-              <CheckCircle2 className="w-5 h-5 mr-2" />
-              Setup in 2 minutes
-            </div>
-            <div className="flex items-center">
-              <CheckCircle2 className="w-5 h-5 mr-2" />
-              24/7 support
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
@@ -350,16 +235,6 @@ export default function LandingPage() {
               <p className="text-gray-400 mb-6 max-w-md">
                 Empowering individuals and families to achieve financial freedom through intelligent technology and personalized insights.
               </p>
-              <div className="flex space-x-4">
-                <div className="flex items-center text-sm text-gray-400">
-                  <Users className="w-4 h-4 mr-2" />
-                  10,000+ Users
-                </div>
-                <div className="flex items-center text-sm text-gray-400">
-                  <Star className="w-4 h-4 mr-2 text-yellow-400" />
-                  4.9 Rating
-                </div>
-              </div>
             </div>
             
             <div>
