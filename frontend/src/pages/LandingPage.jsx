@@ -1,29 +1,31 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, TrendingUp, Shield, BarChart3, MessageSquare } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, BarChart3, MessageSquare, PiggyBank, Target, Zap, Users, Star, CheckCircle2 } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-2xl">💹</span>
-              <span className="ml-2 text-xl font-bold text-gray-900">FinSight</span>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">FinSight</span>
             </div>
-            <div className="flex space-x-4">
+            <div className="flex items-center space-x-4">
               <Link 
                 to="/login" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Login
               </Link>
               <Link 
                 to="/signup" 
-                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105"
               >
-                Sign Up
+                Get Started Free
               </Link>
             </div>
           </div>
@@ -31,91 +33,262 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-            <span className="block">Your finances,</span>
-            <span className="block text-blue-600">intelligently managed.</span>
+          <div className="inline-flex items-center px-4 py-2 bg-blue-50 border border-blue-200 rounded-full mb-6">
+            <Zap className="w-4 h-4 text-blue-600 mr-2" />
+            <span className="text-sm font-medium text-blue-700">Trusted by 10,000+ users worldwide</span>
+          </div>
+          <h1 className="text-5xl font-bold text-gray-900 sm:text-6xl md:text-7xl lg:text-8xl mb-6">
+            <span className="block">Smart finance</span>
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">made simple</span>
           </h1>
-          <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Take control of your financial future with AI-powered insights, smart budgeting, and personalized recommendations.
+          <p className="mx-auto max-w-3xl text-xl text-gray-600 mb-10 leading-relaxed">
+            Transform your financial future with intelligent budgeting, AI-powered insights, and personalized wealth-building strategies—all in one beautiful dashboard.
           </p>
-          <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-            <div className="rounded-md shadow">
-              <Link
-                to="/signup"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10"
-              >
-                Get Started
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Link
+              to="/signup"
+              className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              Start Free Trial
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              Sign In
+            </Link>
+          </div>
+          <div className="flex items-center justify-center space-x-8 text-sm text-gray-500">
+            <div className="flex items-center">
+              <CheckCircle2 className="w-5 h-5 text-green-500 mr-2" />
+              No credit card required
             </div>
-            <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-              <Link
-                to="/login"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10"
-              >
-                Login
-              </Link>
+            <div className="flex items-center">
+              <CheckCircle2 className="w-5 h-5 text-green-500 mr-2" />
+              14-day free trial
+            </div>
+            <div className="flex items-center">
+              <CheckCircle2 className="w-5 h-5 text-green-500 mr-2" />
+              Cancel anytime
             </div>
           </div>
         </div>
       </div>
 
       {/* Features */}
-      <div className="py-12 bg-white">
+      <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Features</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Everything you need to manage your finances
+          <div className="text-center mb-16">
+            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase mb-4">Powerful Features</h2>
+            <p className="text-4xl font-bold text-gray-900 mb-4">
+              Everything you need to master your finances
+            </p>
+            <p className="max-w-2xl mx-auto text-xl text-gray-600">
+              From daily budgeting to long-term wealth building, we've got you covered with intelligent tools that adapt to your lifestyle.
             </p>
           </div>
 
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:grid-cols-4">
-              {/* Feature 1 */}
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <TrendingUp className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Smart Analytics</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Get detailed insights into your spending patterns and financial health.
-                </p>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {/* Feature 1 */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border border-blue-100 hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mb-6">
+                <TrendingUp className="h-7 w-7 text-white" />
               </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Smart Analytics</h3>
+              <p className="text-gray-600 mb-4">
+                Get real-time insights into your spending patterns, investment performance, and financial health with beautiful visualizations.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Real-time dashboards
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Custom reports
+                </li>
+              </ul>
+            </div>
 
-              {/* Feature 2 */}
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white">
-                  <BarChart3 className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Budget Tracking</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Set budgets and track your expenses to stay on top of your financial goals.
-                </p>
+            {/* Feature 2 */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl border border-green-100 hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+                <PiggyBank className="h-7 w-7 text-white" />
               </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Smart Budgeting</h3>
+              <p className="text-gray-600 mb-4">
+                Create intelligent budgets that adapt to your lifestyle and help you reach your financial goals faster.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Automated categorization
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Goal tracking
+                </li>
+              </ul>
+            </div>
 
-              {/* Feature 3 */}
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-purple-500 text-white">
-                  <MessageSquare className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">AI Assistant</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Get personalized financial advice powered by advanced AI technology.
-                </p>
+            {/* Feature 3 */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-2xl border border-purple-100 hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center mb-6">
+                <MessageSquare className="h-7 w-7 text-white" />
               </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Financial Advisor</h3>
+              <p className="text-gray-600 mb-4">
+                Get personalized financial advice 24/7 from our AI-powered assistant that learns from your unique financial situation.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Personalized insights
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Investment recommendations
+                </li>
+              </ul>
+            </div>
 
-              {/* Feature 4 */}
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-yellow-500 text-white">
-                  <Shield className="h-6 w-6" />
+            {/* Feature 4 */}
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-2xl border border-yellow-100 hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl flex items-center justify-center mb-6">
+                <Target className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Goal Planning</h3>
+              <p className="text-gray-600 mb-4">
+                Set and track financial goals with smart recommendations on how to achieve them faster.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Retirement planning
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Savings targets
+                </li>
+              </ul>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="bg-gradient-to-br from-red-50 to-rose-50 p-8 rounded-2xl border border-red-100 hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-r from-red-600 to-rose-600 rounded-xl flex items-center justify-center mb-6">
+                <Shield className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Bank-Level Security</h3>
+              <p className="text-gray-600 mb-4">
+                Your financial data is protected with enterprise-grade encryption and security measures.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  256-bit encryption
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Two-factor authentication
+                </li>
+              </ul>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 p-8 rounded-2xl border border-cyan-100 hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                <BarChart3 className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Investment Tracking</h3>
+              <p className="text-gray-600 mb-4">
+                Monitor all your investments in one place with real-time portfolio analysis and performance metrics.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Portfolio analytics
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                  Risk assessment
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials */}
+      <div className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Loved by thousands</h2>
+            <p className="max-w-2xl mx-auto text-xl text-gray-600">
+              See what our users have to say about their financial transformation
+            </p>
+          </div>
+          
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="bg-white p-8 rounded-2xl shadow-sm">
+              <div className="flex mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-6">
+                "FinSight completely transformed how I manage my money. The AI insights helped me save $2,400 in just 3 months!"
+              </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  JD
                 </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Secure & Private</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Your financial data is encrypted and protected with enterprise-grade security.
-                </p>
+                <div className="ml-4">
+                  <p className="font-semibold text-gray-900">John Doe</p>
+                  <p className="text-sm text-gray-500">Software Engineer</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-8 rounded-2xl shadow-sm">
+              <div className="flex mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-6">
+                "The best financial app I've ever used. The budget tracking features are incredibly intuitive and the AI advisor is spot on."
+              </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  SM
+                </div>
+                <div className="ml-4">
+                  <p className="font-semibold text-gray-900">Sarah Miller</p>
+                  <p className="text-sm text-gray-500">Marketing Director</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-8 rounded-2xl shadow-sm">
+              <div className="flex mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-6">
+                "Finally, a finance app that gets it. The investment tracking alone has saved me hours every month."
+              </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  MC
+                </div>
+                <div className="ml-4">
+                  <p className="font-semibold text-gray-900">Mike Chen</p>
+                  <p className="text-sm text-gray-500">Business Owner</p>
+                </div>
               </div>
             </div>
           </div>
@@ -123,36 +296,104 @@ export default function LandingPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-blue-600">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 lg:flex lg:items-center lg:justify-between">
-          <div className="lg:w-0 lg:flex-1">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              Ready to take control of your finances?
-            </h2>
-            <p className="mt-3 text-lg text-blue-100">
-              Join thousands of users who are already managing their finances smarter with FinSight.
-            </p>
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to transform your financial future?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join over 10,000 users who are already building wealth smarter with FinSight. Start your free 14-day trial today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/signup"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-600 bg-white rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
+            >
+              Start Free Trial
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-blue-600 transition-colors"
+            >
+              Sign In
+            </Link>
           </div>
-          <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
-            <div className="inline-flex rounded-md shadow">
-              <Link
-                to="/signup"
-                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50"
-              >
-                Get Started Free
-              </Link>
+          <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-blue-100">
+            <div className="flex items-center">
+              <CheckCircle2 className="w-5 h-5 mr-2" />
+              No credit card required
+            </div>
+            <div className="flex items-center">
+              <CheckCircle2 className="w-5 h-5 mr-2" />
+              Setup in 2 minutes
+            </div>
+            <div className="flex items-center">
+              <CheckCircle2 className="w-5 h-5 mr-2" />
+              24/7 support
             </div>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-50">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-base text-gray-500">
-              © 2024 FinSight. All rights reserved.
-            </p>
+      <footer className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xl font-bold">FinSight</span>
+              </div>
+              <p className="text-gray-400 mb-6 max-w-md">
+                Empowering individuals and families to achieve financial freedom through intelligent technology and personalized insights.
+              </p>
+              <div className="flex space-x-4">
+                <div className="flex items-center text-sm text-gray-400">
+                  <Users className="w-4 h-4 mr-2" />
+                  10,000+ Users
+                </div>
+                <div className="flex items-center text-sm text-gray-400">
+                  <Star className="w-4 h-4 mr-2 text-yellow-400" />
+                  4.9 Rating
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Product</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Security</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Company</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-12 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p className="text-gray-400 text-sm">
+                © 2024 FinSight. All rights reserved.
+              </p>
+              <div className="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
